@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebView
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -25,7 +26,8 @@ internal fun MainScreen(
     onShowFileChooser: (
         ValueCallback<Array<Uri>>,
         WebChromeClient.FileChooserParams
-    ) -> Boolean
+    ) -> Boolean,
+    onWebViewCreated: (WebView) -> Unit,
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -64,6 +66,7 @@ internal fun MainScreen(
             navController = navController,
             modifier = Modifier.padding(paddingValues),
             onShowFileChooser = onShowFileChooser,
+            onWebViewCreated = onWebViewCreated,
         )
     }
 }

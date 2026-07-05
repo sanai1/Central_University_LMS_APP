@@ -22,13 +22,15 @@ internal fun WebViewScreen(
     onShowFileChooser: (
         ValueCallback<Array<Uri>>,
         WebChromeClient.FileChooserParams
-    ) -> Boolean
+    ) -> Boolean,
+    onWebViewCreated: (WebView) -> Unit,
 ) {
     val darkTheme = isSystemInDarkTheme()
     AndroidView(
         modifier = modifier,
         factory = { context ->
             WebView(context).apply {
+                onWebViewCreated(this)
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
