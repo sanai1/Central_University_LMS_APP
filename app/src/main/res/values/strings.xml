@@ -5,4 +5,5 @@
     <string name="menu_title_grade_book">Зачетка</string>
     <string name="menu_title_statement">Ведомость</string>
     <string name="menu_title_handbook">Хендбук</string>
+    <string name="menu_title_time">Time</string>
 </resources>

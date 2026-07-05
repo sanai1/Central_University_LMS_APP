@@ -165,6 +165,7 @@ class MainActivity : ComponentActivity() {
         internal val screens = listOf(
             Screen.CoursesScreen,
             Screen.TasksScreen,
+            Screen.TimeSrceen,
             Screen.GradeBookScreen,
             Screen.StatementScreen,
             Screen.HandBookScreen,

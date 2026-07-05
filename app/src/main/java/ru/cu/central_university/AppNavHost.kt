@@ -41,6 +41,13 @@ internal fun AppNavHost(
                 onWebViewCreated = onWebViewCreated,
             )
         }
+        composable(Screen.TimeSrceen.route) {
+            WebViewScreen(
+                url = Screen.TimeSrceen.url,
+                onShowFileChooser = onShowFileChooser,
+                onWebViewCreated = onWebViewCreated,
+            )
+        }
         composable(Screen.GradeBookScreen.route) {
             WebViewScreen(
                 url = Screen.GradeBookScreen.url,
