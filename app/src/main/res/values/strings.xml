@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Central_University</string>
+    <string name="menu_title_courses">Курсы</string>
+    <string name="menu_title_tasks">Задания</string>
+    <string name="menu_title_grade_book">Зачетка</string>
+    <string name="menu_title_statement">Ведомость</string>
+    <string name="menu_title_handbook">Хендбук</string>
+</resources>
