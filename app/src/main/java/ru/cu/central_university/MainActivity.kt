@@ -163,12 +163,11 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         internal val screens = listOf(
-            Screen.CoursesScreen,
-            Screen.TasksScreen,
+            Screen.LMSScreen,
+            Screen.CalendarScreen,
             Screen.TimeSrceen,
-            Screen.GradeBookScreen,
-            Screen.StatementScreen,
             Screen.HandBookScreen,
+            Screen.SettingsScreen,
         )
     }
 }

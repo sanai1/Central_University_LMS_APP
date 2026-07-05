@@ -9,8 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import ru.cu.central_university.MainActivity.Companion.screens
+import ru.cu.central_university.cu.RouteScreen
 import ru.cu.central_university.cu.Screen
 import ru.cu.central_university.ui.component.WebViewScreen
+import ru.cu.central_university.ui.screen.SettingsScreen
 
 @Composable
 internal fun AppNavHost(
@@ -24,50 +27,43 @@ internal fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.TasksScreen.route,
+        startDestination = Screen.LMSScreen.subScreens.first().route,
         modifier = modifier
     ) {
-        composable(Screen.CoursesScreen.route) {
-            WebViewScreen(
-                url = Screen.CoursesScreen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
-        }
-        composable(Screen.TasksScreen.route) {
-            WebViewScreen(
-                url = Screen.TasksScreen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
-        }
-        composable(Screen.TimeSrceen.route) {
-            WebViewScreen(
-                url = Screen.TimeSrceen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
-        }
-        composable(Screen.GradeBookScreen.route) {
-            WebViewScreen(
-                url = Screen.GradeBookScreen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
-        }
-        composable(Screen.StatementScreen.route) {
-            WebViewScreen(
-                url = Screen.StatementScreen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
-        }
-        composable(Screen.HandBookScreen.route) {
-            WebViewScreen(
-                url = Screen.HandBookScreen.url,
-                onShowFileChooser = onShowFileChooser,
-                onWebViewCreated = onWebViewCreated,
-            )
+        screens.forEach { screen ->
+            when {
+                screen.subScreens.isNotEmpty() -> {
+                    screen.subScreens.forEach { subScreen ->
+                        composable(subScreen.route) {
+                            WebViewScreen(
+                                url = subScreen.url
+                                    ?: throw RuntimeException("Необходимо передавать URL в ${subScreen.route}"),
+                                onShowFileChooser = onShowFileChooser,
+                                onWebViewCreated = onWebViewCreated,
+                            )
+                        }
+                    }
+                }
+
+                screen.url != null -> {
+                    composable(screen.route) {
+                        WebViewScreen(
+                            url = screen.url,
+                            onShowFileChooser = onShowFileChooser,
+                            onWebViewCreated = onWebViewCreated,
+                        )
+                    }
+                }
+
+                else -> {
+                    composable(screen.route) {
+                        when (screen.route) {
+                            RouteScreen.SETTINGS -> SettingsScreen()
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
