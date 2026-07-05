@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-
     testImplementation(libs.junit)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
