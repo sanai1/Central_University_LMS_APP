@@ -1,6 +1,9 @@
 package ru.cu.central_university.ui.screen
 
 import android.content.Context
+import android.net.Uri
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -19,6 +22,10 @@ import ru.cu.central_university.MainActivity.Companion.screens
 @Composable
 internal fun MainScreen(
     context: Context,
+    onShowFileChooser: (
+        ValueCallback<Array<Uri>>,
+        WebChromeClient.FileChooserParams
+    ) -> Boolean
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -55,7 +62,8 @@ internal fun MainScreen(
     ) { paddingValues ->
         AppNavHost(
             navController = navController,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            onShowFileChooser = onShowFileChooser,
         )
     }
 }

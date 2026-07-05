@@ -2,8 +2,11 @@ package ru.cu.central_university.ui.component
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -14,7 +17,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-internal fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
+internal fun WebViewScreen(
+    url: String,
+    modifier: Modifier = Modifier,
+    onShowFileChooser: (
+        ValueCallback<Array<Uri>>,
+        WebChromeClient.FileChooserParams
+    ) -> Boolean
+) {
     val darkTheme = isSystemInDarkTheme()
     AndroidView(
         modifier = modifier,
@@ -46,6 +56,18 @@ internal fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
                     // убрать полосы прокрутки
                     isVerticalScrollBarEnabled = false
                     isHorizontalScrollBarEnabled = false
+                }
+                webChromeClient = object : WebChromeClient() {
+                    override fun onShowFileChooser(
+                        webView: WebView?,
+                        filePathCallback: ValueCallback<Array<Uri>>?,
+                        fileChooserParams: FileChooserParams?
+                    ): Boolean {
+                        if (filePathCallback == null || fileChooserParams == null) {
+                            return false
+                        }
+                        return onShowFileChooser(filePathCallback, fileChooserParams)
+                    }
                 }
                 webViewClient = WebViewClient()
                 loadUrl(url)
