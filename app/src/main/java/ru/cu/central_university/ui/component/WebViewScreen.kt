@@ -1,13 +1,12 @@
 package ru.cu.central_university.ui.component
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.net.Uri
-import android.os.Build
+import android.os.Message
 import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -52,12 +51,45 @@ internal fun WebViewScreen(
                     // для хранения данных
                     databaseEnabled = true
                     // открытие окон через JS
+                    setSupportMultipleWindows(true)
                     javaScriptCanOpenWindowsAutomatically = true
                     // убрать полосы прокрутки
                     isVerticalScrollBarEnabled = false
                     isHorizontalScrollBarEnabled = false
                 }
+
                 webChromeClient = object : WebChromeClient() {
+                    override fun onCreateWindow(
+                        view: WebView?,
+                        isDialog: Boolean,
+                        isUserGesture: Boolean,
+                        resultMsg: Message?
+                    ): Boolean {
+                        val context = view?.context ?: return false
+                        val newWebView = WebView(context)
+
+                        newWebView.webViewClient = object : WebViewClient() {
+                            override fun shouldOverrideUrlLoading(
+                                view: WebView?,
+                                request: WebResourceRequest?
+                            ): Boolean {
+                                val newUrl = request?.url?.toString() ?: return false
+                                downloadFile(
+                                    context = context,
+                                    url = newUrl,
+                                    userAgent = this@apply.settings.userAgentString,
+                                    contentDisposition = null,
+                                    mimeType = null
+                                )
+                                return true
+                            }
+                        }
+                        val transport = resultMsg?.obj as? WebView.WebViewTransport
+                        transport?.webView = newWebView
+                        resultMsg?.sendToTarget()
+                        return true
+                    }
+
                     override fun onShowFileChooser(
                         webView: WebView?,
                         filePathCallback: ValueCallback<Array<Uri>>?,
@@ -69,34 +101,22 @@ internal fun WebViewScreen(
                         return onShowFileChooser(filePathCallback, fileChooserParams)
                     }
                 }
+
                 webViewClient = WebViewClient()
+                setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+                    downloadFile(
+                        context = context,
+                        url = url,
+                        userAgent = userAgent,
+                        contentDisposition = contentDisposition,
+                        mimeType = mimeType
+                    )
+                }
                 loadUrl(url)
             }
         },
         update = { webView ->
             webView.applyDarkMode(darkTheme)
-        }
-    )
-}
-
-fun WebView.applyDarkMode(darkTheme: Boolean) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        settings.isAlgorithmicDarkeningAllowed = darkTheme
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        @Suppress("DEPRECATION")
-        settings.forceDark =
-            if (darkTheme) {
-                WebSettings.FORCE_DARK_ON
-            } else {
-                WebSettings.FORCE_DARK_OFF
-            }
-    }
-
-    setBackgroundColor(
-        if (darkTheme) {
-            Color.BLACK
-        } else {
-            Color.WHITE
         }
     )
 }
